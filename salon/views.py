@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from .models import Client, Service, TeamMember, Appointment
 from .forms import AppointmentForm
 from datetime import datetime, date
+from .forms import ClientForm, ServiceForm, TeamMemberForm  # Adiciona isso no topo, se não tiver
 
 
 def paginate_queryset(request, queryset, default_page_size=10):
@@ -83,3 +84,33 @@ def report_completed_services(request):
         'start_date': start_date,
         'end_date': end_date,
     })
+
+def client_create(request):
+    if request.method == 'POST':
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('client_list')
+    else:
+        form = ClientForm()
+    return render(request, 'client_form.html', {'form': form})
+
+def service_create(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('service_list')
+    else:
+        form = ServiceForm()
+    return render(request, 'service_form.html', {'form': form})
+
+def team_member_create(request):
+    if request.method == 'POST':
+        form = TeamMemberForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('team_list')
+    else:
+        form = TeamMemberForm()
+    return render(request, 'team_member_form.html', {'form': form})

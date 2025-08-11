@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1 class="text-3xl font-bold mb-6 text-center md:text-left">Lista de Membros da Equipe</h1>
+<a href="{% url 'team_member_create' %}" class="inline-block bg-blue-500 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-600 mb-6">Adicionar Membro de Equipe</a>
 <div class="flex justify-end mb-4">
     <form method="get" class="flex items-center">
         <label for="page_size" class="mr-2">Itens por página:</label>
