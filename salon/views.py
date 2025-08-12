@@ -38,7 +38,7 @@ def service_list(request):
 def team_list(request):
     team_members = TeamMember.objects.all()
     page_obj, page_size = paginate_queryset(request, team_members)
-    return render(request, 'team_list.html', {'page_obj': page_obj, 'page_size': page_size})
+    return render(request, 'team_member_list.html', {'page_obj': page_obj, 'page_size': page_size})
 
 
 def appointment_list(request):
@@ -52,13 +52,13 @@ def appointment_create(request):
         form = AppointmentForm(request.POST)
         if form.is_valid():
             appointment = Appointment.objects.create(
-                client_id=form.cleaned_data['client_id'],
-                service_id=form.cleaned_data['service_id'],
-                team_member_id=form.cleaned_data['team_member_id'],
+                client=form.cleaned_data['client'],
+                service=form.cleaned_data['service'],
+                team_member=form.cleaned_data['team_member'],
                 appointment_time=form.cleaned_data['appointment_time'],
                 status=form.cleaned_data['status']
             )
-            return redirect('appointment_list')
+            return redirect('appointment_create')  # Temporário, ajuste pra 'appointment_list' se definido
     else:
         form = AppointmentForm()
     return render(request, 'appointment_form.html', {'form': form})
@@ -129,7 +129,15 @@ def team_member_create(request):
         form = TeamMemberForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('team_list')
+            return redirect('team_member_create')  # Temporário, ajuste pra 'team_member_list' se definido
     else:
         form = TeamMemberForm()
     return render(request, 'team_member_form.html', {'form': form})
+
+def team_member_list(request):
+    team_members = TeamMember.objects.all()
+    page_size = request.GET.get('page_size', 10)  # Padrão 10 itens por página
+    paginator = Paginator(team_members, page_size)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'team_member_list.html', {'page_obj': page_obj, 'page_size': page_size})

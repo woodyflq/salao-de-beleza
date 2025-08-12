@@ -25,7 +25,7 @@
             {% for team_member in page_obj %}
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">{{ team_member.name }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">{{ team_member.specialty }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ team_member.specialty|default:"Sem especialidade" }}</td>
                 </tr>
             {% empty %}
                 <tr>

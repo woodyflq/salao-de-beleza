@@ -1,10 +1,10 @@
 # Sistema de Agendamentos de Salão de Beleza
 
-E aí, beleza? Esse aqui é um sistema maneiro feito com Django pra ajudar a gerenciar os agendamentos do seu salão de beleza. Dá pra controlar clientes, serviços, a equipe, os agendamentos e até tirar um relatório dos serviços que foram feitos direitinho.
+Esse aqui é um sistema feito com Django pra gerenciar os agendamentos de um salão de beleza. Dá pra controlar clientes, serviços, a equipe, os agendamentos e até tirar um relatório dos serviços que foram concluídos.
 
 ## O Que Você Vai Precisar
 - Python 3.11 ou uma versão mais nova
-- Git (pra baixar o código)
+- Git pra baixar o código (ou baixar o zip)
 
 ## Como Instalar e Rodar na Sua Máquina
 
@@ -17,7 +17,7 @@ cd salao-de-beleza
 Isso pega tudo que tá no GitHub e joga na sua pasta.
 
 ### 2. Cria e Ativa um Ambiente Virtual
-Vamos criar um cantinho separado pra instalar as coisas e evitar bagunça:
+Inicie um ambiente virtual separado para instalar as coisas e evitar bagunça:
 - No Windows:
   ```bash
   python -m venv venv
@@ -44,14 +44,14 @@ python manage.py migrate
 Isso cria as tabelas que o sistema precisa.
 
 ### 5. Cria um Superusuário (Se Quiser Entrar no Admin)
-Pra mexer no painel de admin, cria um superusuário:
+Para mexer no painel de admin, cria um superusuário:
 ```bash
 python manage.py createsuperuser
 ```
 Aí ele vai pedir um nome de usuário, e-mail e senha.
 
 ### 6. Liga o Servidor
-Roda o servidor pra ver o sistema funcionando:
+Roda o servidor para ver o sistema funcionando:
 ```bash
 python manage.py runserver
 ```
@@ -61,7 +61,7 @@ python manage.py runserver
 - Se quiser mexer no admin, vai em `http://127.0.0.1:8000/admin/` e usa o login do superusuário que você criou.
 
 ### 8. Coloca Dados de Exemplo (Opcional)
-Se quiser encher o banco com dados fake pra testar, roda esse script:
+Se quiser encher o banco com dados fake pra testar, roda esse script com o servidor fechado (demora um pouco então aguarde):
 ```bash
 python populate_db.py
 ```
@@ -74,8 +74,3 @@ Ele cria clientes, serviços, equipe e agendamentos.
 - **Agendamentos**: Faz e acompanha agendamentos (Agendado, Concluído, Cancelado), com paginação.
 - **Relatórios**: Mostra serviços concluídos num período (a data final já vem como hoje por padrão).
 - **Botão Admin**: Tem um botãozinho na barra de cima pra ir direto pro painel de admin.
-
-## Dicas de Performance
-- Tem índices nas colunas mais usadas (`email`, `appointment_time`, `status`) pra ficar mais rápido.
-- Usa `select_related` pra não sobrecarregar o banco com muitas consultas.
-- A paginação ajuda quando tiver muita coisa pra mostrar.

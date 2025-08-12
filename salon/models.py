@@ -22,14 +22,8 @@ class Service(models.Model):
         return self.name
 
 class TeamMember(models.Model):
-    SPECIALTY_CHOICES = [
-        ('Cabelereira', 'Cabelereira'),
-        ('Manicure', 'Manicure'),
-        ('Esteticista', 'Esteticista'),
-        ('Barbeiro', 'Barbeiro'),
-    ]
     name = models.CharField(max_length=100)
-    specialty = models.CharField(max_length=100, choices=SPECIALTY_CHOICES, blank=True)
+    specialty = models.CharField(max_length=100, blank=True)  # Remova choices=SPECIALTY_CHOICES
 
     def __str__(self):
         return self.name

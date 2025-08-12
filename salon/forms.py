@@ -29,9 +29,27 @@ class AppointmentForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        cleaned_data['client_id'] = self.data.get('client_id')
-        cleaned_data['service_id'] = self.data.get('service_id')
-        cleaned_data['team_member_id'] = self.data.get('team_member_id')
+        client_id = self.data.get('client_id')
+        service_id = self.data.get('service')
+        team_member_id = self.data.get('team_member')
+
+        # Valida e converte os IDs pra instâncias
+        if client_id:
+            try:
+                cleaned_data['client'] = Client.objects.get(id=client_id)
+            except Client.DoesNotExist:
+                raise forms.ValidationError("Cliente selecionado não existe.")
+        if service_id:
+            try:
+                cleaned_data['service'] = Service.objects.get(id=service_id)
+            except Service.DoesNotExist:
+                raise forms.ValidationError("Serviço selecionado não existe.")
+        if team_member_id:
+            try:
+                cleaned_data['team_member'] = TeamMember.objects.get(id=team_member_id)
+            except TeamMember.DoesNotExist:
+                raise forms.ValidationError("Membro da equipe selecionado não existe.")
+
         return cleaned_data
 
 class ClientForm(forms.ModelForm):
@@ -48,6 +66,23 @@ class ServiceForm(forms.ModelForm):
         }
 
 class TeamMemberForm(forms.ModelForm):
+    specialty = forms.ChoiceField(choices=[('', 'Selecione um serviço')] + [(s.name, s.name) for s in Service.objects.all()], required=False, label="Especialidade")
+
     class Meta:
         model = TeamMember
         fields = ['name', 'specialty']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg'}),
+            'specialty': forms.Select(attrs={'class': 'w-full px-4 py-2 border rounded-lg'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Recarrega as opções dinamicamente a cada inicialização
+        self.fields['specialty'].choices = [('', 'Selecione um serviço')] + [(s.name, s.name) for s in Service.objects.all()]
+
+    def save(self, *args, **kwargs):
+        # Atribui o valor selecionado ao campo specialty
+        if self.cleaned_data['specialty']:
+            self.instance.specialty = self.cleaned_data['specialty']
+        return super().save(*args, **kwargs)
