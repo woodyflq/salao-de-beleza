@@ -66,6 +66,13 @@
         });
     });
 </script>
+<script>
+    {% if messages %}
+        {% for message in messages %}
+            alert("{{ message }}");
+        {% endfor %}
+    {% endif %}
+</script>
 <style>
     #id_service, #id_team_member {
         border: 1px solid #d1d5db; /* Cor padrão do Tailwind 'border' */

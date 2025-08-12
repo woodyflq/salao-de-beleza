@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+from django.contrib import messages
 from .models import Client, Service, TeamMember, Appointment
 from .forms import AppointmentForm
 from datetime import datetime, date
@@ -58,7 +59,8 @@ def appointment_create(request):
                 appointment_time=form.cleaned_data['appointment_time'],
                 status=form.cleaned_data['status']
             )
-            return redirect('appointment_create')  # Temporário, ajuste pra 'appointment_list' se definido
+            messages.success(request, "Novo atendimento registrado com sucesso!")
+            return redirect('appointment_create')
     else:
         form = AppointmentForm()
     return render(request, 'appointment_form.html', {'form': form})

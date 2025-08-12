@@ -56,33 +56,46 @@ class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
         fields = ['name', 'email', 'phone']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}),
+            'email': forms.EmailInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}),
+            'phone': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}),
+        }
 
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
         fields = ['name', 'duration', 'price']
         widgets = {
-            'duration': forms.TextInput(attrs={'placeholder': 'HH:MM:SS'}),
+            'name': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}),
+            'duration': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500', 'placeholder': 'HH:MM:SS'}),
+            'price': forms.NumberInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}),
         }
 
 class TeamMemberForm(forms.ModelForm):
-    specialty = forms.ChoiceField(choices=[('', 'Selecione um serviço')] + [(s.name, s.name) for s in Service.objects.all()], required=False, label="Especialidade")
+    specialty = forms.ChoiceField(choices=[('', 'Selecione um serviço')], required=False, label="Especialidade")
 
     class Meta:
         model = TeamMember
         fields = ['name', 'specialty']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg'}),
-            'specialty': forms.Select(attrs={'class': 'w-full px-4 py-2 border rounded-lg'}),
+            'name': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}),
+            'specialty': forms.Select(attrs={'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Recarrega as opções dinamicamente a cada inicialização
-        self.fields['specialty'].choices = [('', 'Selecione um serviço')] + [(s.name, s.name) for s in Service.objects.all()]
+        service_choices = [(s.id, s.name) for s in Service.objects.all()]
+        self.fields['specialty'].choices = [('', 'Selecione um serviço')] + service_choices
+
+    def clean_specialty(self):
+        specialty = self.cleaned_data['specialty']
+        if specialty and not Service.objects.filter(id=specialty).exists():
+            raise forms.ValidationError(f"'{specialty}' não é uma escolha válida.")
+        return specialty
 
     def save(self, *args, **kwargs):
-        # Atribui o valor selecionado ao campo specialty
         if self.cleaned_data['specialty']:
-            self.instance.specialty = self.cleaned_data['specialty']
+            service = Service.objects.get(id=self.cleaned_data['specialty'])
+            self.instance.specialty = service.name
         return super().save(*args, **kwargs)
