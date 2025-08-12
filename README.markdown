@@ -74,3 +74,11 @@ Ele cria clientes, serviços, equipe e agendamentos.
 - **Agendamentos**: Faz e acompanha agendamentos (Agendado, Concluído, Cancelado), com paginação.
 - **Relatórios**: Mostra serviços concluídos num período (a data final já vem como hoje por padrão).
 - **Botão Admin**: Tem um botãozinho na barra de cima pra ir direto pro painel de admin.
+
+## Melhorias a Serem Feitas
+
+- **Filtrar e Ordenar Clientes**: Seria legal poder filtrar os clientes por nome ou e-mail, e até ordenar por ordem alfabética ou data de cadastro. Isso ia facilitar achar alguém rápido na hora de agendar.
+  
+- **Serviços por Profissional no Agendamento**: Quando a gente for fazer um agendamento, seria massa se, ao selecionar um profissional, aparecessem só os serviços que ele sabe fazer. Assim, evita escolher algo que ele não domina.
+
+- **Mais de Um Serviço por Profissional**: Hoje cada profissional tem uma especialidade só, mas eu quero permitir que ele possa fazer mais de um serviço. Tipo, um cara que faz corte e barba, por exemplo. Isso ia dar mais flexibilidade pro agendamento.
