@@ -89,5 +89,6 @@ def populate_database():
     # [5] Mensagem de sucesso
     print("Banco de dados populado com sucesso!")
 
+
 if __name__ == "__main__":
     populate_database()
