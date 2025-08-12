@@ -21,8 +21,10 @@ def paginate_queryset(request, queryset, default_page_size=10):
     return page_obj, page_size
 
 
+from django.db.models import Count  # Adiciona isso no topo, se não tiver
+
 def client_list(request):
-    clients = Client.objects.all()
+    clients = Client.objects.annotate(appointment_count=Count('appointment'))  # Calcula o número de agendamentos
     page_obj, page_size = paginate_queryset(request, clients)
     return render(request, 'client_list.html', {'page_obj': page_obj, 'page_size': page_size})
 

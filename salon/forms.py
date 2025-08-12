@@ -19,7 +19,7 @@ class ServiceForm(forms.ModelForm):
         model = Service
         fields = ['name', 'duration', 'price']
         widgets = {
-            'duration': forms.TextInput(attrs={'placeholder': 'HH:MM:SS'}),  # Pra ajudar no formato
+            'duration': forms.TextInput(attrs={'placeholder': 'HH:MM:SS'}),
         }
 
 class TeamMemberForm(forms.ModelForm):
