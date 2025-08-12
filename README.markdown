@@ -35,7 +35,6 @@ Instala as dependências que tão listadas no `requirements.txt`:
 ```bash
 pip install -r requirements.txt
 ```
-É rapidinho, só espera um pouquinho.
 
 ### 4. Configura o Banco de Dados
 Deixa o banco de dados pronto com os comandos de migração:
@@ -49,7 +48,7 @@ Pra mexer no painel de admin, cria um superusuário:
 ```bash
 python manage.py createsuperuser
 ```
-Aí ele vai pedir um nome de usuário, e-mail (pode pular se quiser) e senha. Coloca o que você quiser e guarda isso direitinho.
+Aí ele vai pedir um nome de usuário, e-mail e senha.
 
 ### 6. Liga o Servidor
 Roda o servidor pra ver o sistema funcionando:
@@ -66,7 +65,7 @@ Se quiser encher o banco com dados fake pra testar, roda esse script:
 ```bash
 python populate_db.py
 ```
-Ele cria clientes, serviços, equipe e agendamentos de mentirinha.
+Ele cria clientes, serviços, equipe e agendamentos.
 
 ## O Que Esse Sistema Faz
 - **Gerencia Clientes**: Vê e controla clientes com paginação e escolhe quantos mostrar por página.
@@ -80,14 +79,3 @@ Ele cria clientes, serviços, equipe e agendamentos de mentirinha.
 - Tem índices nas colunas mais usadas (`email`, `appointment_time`, `status`) pra ficar mais rápido.
 - Usa `select_related` pra não sobrecarregar o banco com muitas consultas.
 - A paginação ajuda quando tiver muita coisa pra mostrar.
-
-## Coisinhas pra Ficar de Olho
-- Tá usando SQLite por ser simples. Pra algo maior, troca por PostgreSQL.
-- A `SECRET_KEY` no `beauty_salon/settings.py` é só um exemplo. Troca por uma chave segura se for usar de verdade.
-- O estilo é com Tailwind CSS pelo CDN, então fica bonito e responsivo.
-
-## Quer Ajudar?
-Se quiser dar uma mãozinha, faz um fork, muda o que acha que dá pra melhorar e manda um pull request. Sugestões são bem-vindas!
-
-## Licença
-Não tem licença definida ainda. Se for usar comercialmente ou mudar bastante, dá um toque pro dono do repositório.

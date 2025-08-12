@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models import Count
+from django.http import JsonResponse
 from django.core.paginator import Paginator
 from .models import Client, Service, TeamMember, Appointment
 from .forms import AppointmentForm
@@ -51,12 +51,29 @@ def appointment_create(request):
     if request.method == 'POST':
         form = AppointmentForm(request.POST)
         if form.is_valid():
-            form.save()
+            appointment = Appointment.objects.create(
+                client_id=form.cleaned_data['client_id'],
+                service_id=form.cleaned_data['service_id'],
+                team_member_id=form.cleaned_data['team_member_id'],
+                appointment_time=form.cleaned_data['appointment_time'],
+                status=form.cleaned_data['status']
+            )
             return redirect('appointment_list')
     else:
         form = AppointmentForm()
     return render(request, 'appointment_form.html', {'form': form})
 
+def ajax_search_client(request):
+    term = request.GET.get('term', '')
+    clients = Client.objects.filter(name__icontains=term)[:10]
+    results = [{'id': c.id, 'text': c.name} for c in clients]
+    return JsonResponse({'results': results})
+
+def ajax_search_service(request):
+    pass
+
+def ajax_search_team(request):
+    pass
 
 def report_completed_services(request):
     start_date_str = request.GET.get('start_date')
