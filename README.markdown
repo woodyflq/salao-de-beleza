@@ -61,7 +61,7 @@ python manage.py runserver
 - Se quiser mexer no admin, vai em `http://127.0.0.1:8000/admin/` e usa o login do superusuário que você criou.
 
 ### 8. Coloca Dados de Exemplo (Opcional)
-Se quiser encher o banco com dados fake pra testar, roda esse script com o servidor fechado (demora um pouco então aguarde):
+Se quiser encher o banco com dados fake pra testar, roda esse script com o servidor fechado (~5 minutos para 2500 clientes):
 ```bash
 python populate_db.py
 ```

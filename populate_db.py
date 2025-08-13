@@ -1,32 +1,54 @@
 import os
 import django
+import time
+import sys
+from datetime import timedelta
 
-# Configura o ambiente Django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "beauty_salon.settings")
 django.setup()
 
 import random
 from faker import Faker
 from django.utils import timezone
-from datetime import timedelta
 from salon.models import Client, Service, TeamMember, Appointment
 
-fake = Faker('pt_BR')  # Gera dados em português brasileiro
+fake = Faker('pt_BR')
 
-# Função para criar dados fictícios
+def print_progress_bar(current, total, start_time):
+    percent = (current / total) * 100
+    elapsed_time = time.time() - start_time
+    items_per_second = current / elapsed_time if elapsed_time > 0 else 1
+    remaining_items = total - current
+    estimated_remaining = remaining_items / items_per_second if items_per_second > 0 else 0
+    eta = timedelta(seconds=int(estimated_remaining))
+
+    bar_length = 50
+    filled_length = int(bar_length * current // total)
+    bar = '=' * filled_length + '-' * (bar_length - filled_length)
+
+    sys.stdout.write(f'\rProgresso: [{bar}] {percent:.1f}% ({current}/{total}) - ETA: {eta}')
+    sys.stdout.flush()
+
 def populate_database():
-    # [1] Criar 5000 clientes com e-mails únicos
-    for i in range(5000):
-        # Adiciona um sufixo único baseado no índice
-        base_email = fake.email().split('@')[0]  # Pega só a parte antes do @
-        unique_email = f"{base_email}_{i:04d}@example.com"  # Ex.: nome_0001@example.com
+    start_time = time.time()
+    total_clients = 2500
+    total_appointments = 200
+
+    print("Iniciando a população do banco de dados...")
+
+    print(f"Criando {total_clients} clientes...")
+    for i in range(total_clients):
+        base_email = fake.email().split('@')[0]
+        unique_email = f"{base_email}_{i:04d}@example.com"
         Client.objects.create(
             name=fake.name(),
             email=unique_email,
             phone=fake.phone_number()
         )
+        print_progress_bar(i + 1, total_clients, start_time)
+    print("\nClientes criados com sucesso!")
 
-    # [2] Criar serviços (15 opções)
+    print("Criando 15 serviços...")
     services_data = [
         ("Corte de Cabelo", "01:00:00", 50.00),
         ("Manicure", "00:45:00", 30.00),
@@ -44,13 +66,14 @@ def populate_database():
         ("Barba", "00:30:00", 30.00),
         ("Limpeza de Pele", "01:00:00", 70.00),
     ]
-    for name, duration_str, price in services_data:
-        # Converter string de duração para timedelta
+    for i, (name, duration_str, price) in enumerate(services_data, 1):
         hours, minutes, seconds = map(int, duration_str.split(':'))
         duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
         Service.objects.create(name=name, duration=duration, price=price)
+        print_progress_bar(i, len(services_data), start_time)
+    print("\nServiços criados com sucesso!")
 
-    # [3] Criar membros da equipe (máximo de 15 pessoas)
+    print("Criando 15 membros da equipe...")
     team_members = [
         ("Ana Silva", "Cabelereira"),
         ("Maria Clara", "Manicure"),
@@ -68,15 +91,18 @@ def populate_database():
         ("Laura Pereira", "Cabelereira"),
         ("Enzo Rodrigues", "Esteticista"),
     ]
-    for name, specialty in team_members:
+    for i, (name, specialty) in enumerate(team_members, 1):
         TeamMember.objects.create(name=name, specialty=specialty)
+        print_progress_bar(i, len(team_members), start_time)
+    print("\nMembros da equipe criados com sucesso!")
 
-    # [4] Criar 200 agendamentos
+    print(f"Criando {total_appointments} agendamentos...")
     clients = Client.objects.all()
     services = Service.objects.all()
     team_members = TeamMember.objects.all()
-    for _ in range(200):
-        appointment_time = fake.date_time_between(start_date="-30d", end_date="now", tzinfo=timezone.get_current_timezone())
+    for i in range(total_appointments):
+        appointment_time = fake.date_time_between(start_date="-30d", end_date="now",
+                                                  tzinfo=timezone.get_current_timezone())
         status = random.choice(['SCHEDULED', 'COMPLETED', 'CANCELLED'])
         Appointment.objects.create(
             client=random.choice(clients),
@@ -85,9 +111,11 @@ def populate_database():
             appointment_time=appointment_time,
             status=status
         )
+        print_progress_bar(i + 1, total_appointments, start_time)
+    print("\nAgendamentos criados com sucesso!")
 
-    # [5] Mensagem de sucesso
-    print("Banco de dados populado com sucesso!")
+    total_time = time.time() - start_time
+    print(f"\nBanco de dados populado com sucesso! Tempo total: {timedelta(seconds=int(total_time))}")
 
 
 if __name__ == "__main__":
